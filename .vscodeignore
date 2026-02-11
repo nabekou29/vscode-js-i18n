@@ -1,0 +1,6 @@
+**/*
+!out/extension.js
+!out/extension.js.map
+!package.json
+!LICENSE
+!README.md

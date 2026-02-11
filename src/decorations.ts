@@ -1,0 +1,183 @@
+import * as vscode from "vscode";
+import { LanguageClient } from "vscode-languageclient/node";
+
+interface DecorationInfo {
+  range: {
+    start: { line: number; character: number };
+    end: { line: number; character: number };
+  };
+  value: string;
+  key: string;
+}
+
+type GetClientForUri = (uri: vscode.Uri) => LanguageClient | undefined;
+
+let annotationDecorationType: vscode.TextEditorDecorationType | undefined;
+let disappearDecorationType: vscode.TextEditorDecorationType | undefined;
+const debounceTimers = new Map<string, NodeJS.Timeout>();
+const cachedDecorations = new Map<string, DecorationInfo[]>();
+
+export function activateDecorations(
+  getClientForUri: GetClientForUri,
+  context: vscode.ExtensionContext,
+): void {
+  annotationDecorationType = vscode.window.createTextEditorDecorationType({});
+  disappearDecorationType = vscode.window.createTextEditorDecorationType({
+    textDecoration: "none; display: none;",
+  });
+
+  context.subscriptions.push(
+    vscode.window.onDidChangeActiveTextEditor(() => {
+      debounceRefresh(getClientForUri);
+    }),
+    vscode.workspace.onDidChangeTextDocument((e) => {
+      if (e.document === vscode.window.activeTextEditor?.document) {
+        cachedDecorations.delete(e.document.uri.toString());
+        debounceRefresh(getClientForUri);
+      }
+    }),
+    vscode.window.onDidChangeTextEditorSelection((e) => {
+      if (e.textEditor === vscode.window.activeTextEditor) {
+        applyDecorations(e.textEditor);
+      }
+    }),
+  );
+
+  debounceRefresh(getClientForUri);
+}
+
+function debounceRefresh(getClientForUri: GetClientForUri): void {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) return;
+
+  const key = editor.document.uri.toString();
+  const existing = debounceTimers.get(key);
+  if (existing) clearTimeout(existing);
+
+  debounceTimers.set(
+    key,
+    setTimeout(() => {
+      debounceTimers.delete(key);
+      fetchAndApply(getClientForUri);
+    }, 200),
+  );
+}
+
+async function fetchAndApply(getClientForUri: GetClientForUri): Promise<void> {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) return;
+
+  const config = vscode.workspace.getConfiguration("jsI18n");
+  if (!config.get<boolean>("decoration.enabled", true)) {
+    clearDecorations(editor);
+    return;
+  }
+
+  const uri = editor.document.uri.toString();
+  const client = getClientForUri(editor.document.uri);
+  if (!client) return;
+
+  try {
+    const result = await client.sendRequest("workspace/executeCommand", {
+      command: "i18n.getDecorations",
+      arguments: [{ uri }],
+    });
+
+    const decorations = (result as DecorationInfo[] | null) ?? [];
+    cachedDecorations.set(uri, decorations);
+    applyDecorations(editor);
+  } catch {
+    // Server may not support decorations yet
+  }
+}
+
+function applyDecorations(editor: vscode.TextEditor): void {
+  if (!annotationDecorationType || !disappearDecorationType) return;
+
+  const uri = editor.document.uri.toString();
+  const decorations = cachedDecorations.get(uri);
+  if (!decorations) {
+    clearDecorations(editor);
+    return;
+  }
+
+  const config = vscode.workspace.getConfiguration("jsI18n");
+  if (!config.get<boolean>("decoration.enabled", true)) {
+    clearDecorations(editor);
+    return;
+  }
+
+  const maxLength = config.get<number | null>("decoration.maxLength", 50);
+  const selection = editor.selection;
+
+  const annotations: vscode.DecorationOptions[] = [];
+  const disappears: vscode.Range[] = [];
+
+  for (const deco of decorations) {
+    const range = new vscode.Range(
+      deco.range.start.line,
+      deco.range.start.character,
+      deco.range.end.line,
+      deco.range.end.character,
+    );
+
+    const cursorOnLine =
+      (selection.start.line <= range.start.line &&
+        range.start.line <= selection.end.line) ||
+      (selection.start.line <= range.end.line &&
+        range.end.line <= selection.end.line);
+
+    let text = "";
+    if (!cursorOnLine) {
+      text = deco.value;
+      if (maxLength && text.length > maxLength) {
+        text = text.substring(0, maxLength) + "\u2026";
+      }
+      disappears.push(range);
+    }
+
+    annotations.push({
+      range,
+      hoverMessage: deco.key,
+      renderOptions: {
+        after: {
+          contentText: text,
+          color: new vscode.ThemeColor("editorCodeLens.foreground"),
+          fontStyle: "normal",
+        },
+      },
+    });
+  }
+
+  editor.setDecorations(annotationDecorationType, annotations);
+  editor.setDecorations(disappearDecorationType, disappears);
+}
+
+function clearDecorations(editor: vscode.TextEditor): void {
+  if (annotationDecorationType) {
+    editor.setDecorations(annotationDecorationType, []);
+  }
+  if (disappearDecorationType) {
+    editor.setDecorations(disappearDecorationType, []);
+  }
+}
+
+export function onDecorationsChanged(getClientForUri: GetClientForUri): void {
+  debounceRefresh(getClientForUri);
+}
+
+export function deactivateDecorations(): void {
+  if (annotationDecorationType) {
+    annotationDecorationType.dispose();
+    annotationDecorationType = undefined;
+  }
+  if (disappearDecorationType) {
+    disappearDecorationType.dispose();
+    disappearDecorationType = undefined;
+  }
+  for (const timer of debounceTimers.values()) {
+    clearTimeout(timer);
+  }
+  debounceTimers.clear();
+  cachedDecorations.clear();
+}

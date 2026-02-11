@@ -1,0 +1,183 @@
+{
+  "name": "js-i18n",
+  "displayName": "JS I18n",
+  "description": "i18next / next-intl / react-intl support via LSP",
+  "version": "0.1.0",
+  "publisher": "nabekou29",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:json"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "JS I18n",
+      "properties": {
+        "jsI18n.serverPath": {
+          "type": "string",
+          "default": null,
+          "markdownDescription": "Path to `js-i18n-language-server` binary. If not set, resolves from `node_modules` or `PATH`."
+        },
+        "jsI18n.translationFiles.includePatterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["**/{locales,messages}/**/*.json"],
+          "description": "Glob patterns for translation files."
+        },
+        "jsI18n.translationFiles.excludePatterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Glob patterns to exclude from translation files."
+        },
+        "jsI18n.includePatterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["**/*.{js,jsx,ts,tsx}"],
+          "description": "Source file glob patterns."
+        },
+        "jsI18n.excludePatterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["node_modules/**"],
+          "description": "Source file exclusion patterns."
+        },
+        "jsI18n.keySeparator": {
+          "type": "string",
+          "default": ".",
+          "description": "Separator for nested translation keys."
+        },
+        "jsI18n.namespaceSeparator": {
+          "type": ["string", "null"],
+          "default": null,
+          "description": "Separator between namespace and key."
+        },
+        "jsI18n.defaultNamespace": {
+          "type": ["string", "null"],
+          "default": null,
+          "description": "Default namespace when none is specified in code."
+        },
+        "jsI18n.primaryLanguages": {
+          "type": ["array", "null"],
+          "items": { "type": "string" },
+          "default": null,
+          "description": "Fallback language priority when current language is unset."
+        },
+        "jsI18n.diagnostics.missingTranslation.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable missing translation diagnostics."
+        },
+        "jsI18n.diagnostics.missingTranslation.severity": {
+          "type": "string",
+          "enum": ["error", "warning", "information", "hint"],
+          "default": "warning",
+          "description": "Severity for missing translation diagnostics."
+        },
+        "jsI18n.diagnostics.missingTranslation.requiredLanguages": {
+          "type": ["array", "null"],
+          "items": { "type": "string" },
+          "default": null,
+          "markdownDescription": "Only check these languages. Mutually exclusive with `optionalLanguages`."
+        },
+        "jsI18n.diagnostics.missingTranslation.optionalLanguages": {
+          "type": ["array", "null"],
+          "items": { "type": "string" },
+          "default": null,
+          "markdownDescription": "Skip these languages. Mutually exclusive with `requiredLanguages`."
+        },
+        "jsI18n.diagnostics.unusedTranslation.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable unused translation diagnostics."
+        },
+        "jsI18n.diagnostics.unusedTranslation.severity": {
+          "type": "string",
+          "enum": ["error", "warning", "information", "hint"],
+          "default": "hint",
+          "description": "Severity for unused translation diagnostics."
+        },
+        "jsI18n.diagnostics.unusedTranslation.ignorePatterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Glob patterns for keys to exclude from unused diagnostics."
+        },
+        "jsI18n.indexing.numThreads": {
+          "type": ["number", "null"],
+          "default": null,
+          "description": "Parallel thread count for indexing. Default: 40% of CPU cores."
+        },
+        "jsI18n.decoration.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable inline translation display."
+        },
+        "jsI18n.decoration.maxLength": {
+          "type": ["number", "null"],
+          "default": 50,
+          "description": "Max display length for inline translation. null = unlimited."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "jsI18n.selectLanguage",
+        "title": "Select Language",
+        "category": "JS I18n"
+      },
+      {
+        "command": "jsI18n.editTranslation",
+        "title": "Edit Translation",
+        "category": "JS I18n"
+      },
+      {
+        "command": "jsI18n.copyKey",
+        "title": "Copy Translation Key",
+        "category": "JS I18n"
+      },
+      {
+        "command": "jsI18n.deleteUnusedKeys",
+        "title": "Delete Unused Keys",
+        "category": "JS I18n"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "build:watch": "node esbuild.mjs --watch",
+    "build:test": "tsgo -p tsconfig.test.json",
+    "check": "tsgo --noEmit",
+    "pretest:e2e": "pnpm build && pnpm build:test",
+    "test:e2e": "vscode-test",
+    "vscode:prepublish": "pnpm build"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@typescript/native-preview": "^7.0.0-dev",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.75.0",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
+    "esbuild": "^0.24.0",
+    "mocha": "^11.7.5",
+    "vscode-languageserver-protocol": "^3.17.5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  }
+}
