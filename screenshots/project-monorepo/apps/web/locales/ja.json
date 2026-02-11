@@ -1,0 +1,11 @@
+{
+  "hero": {
+    "title": "ShopNow へようこそ",
+    "subtitle": "毎日お得なセールを発見"
+  },
+  "nav": {
+    "home": "ホーム",
+    "products": "商品",
+    "about": "会社概要"
+  }
+}

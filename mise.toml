@@ -1,3 +1,18 @@
 [tools]
 node = "24"
 pnpm = "10"
+
+[tasks.screenshots]
+description = "Capture screenshots and demo video for README"
+depends = ["screenshots:setup"]
+run = "cd screenshots && node capture.mjs"
+
+[tasks."screenshots:setup"]
+description = "Install dependencies and build extension for screenshots"
+run = """
+pnpm build
+cd screenshots && pnpm install
+cd project && pnpm install
+cd ../project-namespace && pnpm install
+cd ../project-monorepo && pnpm install
+"""

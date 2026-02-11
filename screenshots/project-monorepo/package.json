@@ -1,0 +1,5 @@
+{
+  "name": "js-i18n-demo-monorepo",
+  "private": true,
+  "workspaces": ["apps/*"]
+}

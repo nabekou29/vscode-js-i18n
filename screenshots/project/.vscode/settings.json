@@ -1,0 +1,7 @@
+{
+  "jsI18n.serverPath": "/Users/kohei_watanabe/.cargo/bin/js-i18n-language-server",
+  "jsI18n.translationFiles.includePatterns": ["**/locales/**/*.json"],
+  "workbench.colorTheme": "Default Dark Modern",
+  "editor.fontSize": 14,
+  "editor.lineHeight": 22
+}

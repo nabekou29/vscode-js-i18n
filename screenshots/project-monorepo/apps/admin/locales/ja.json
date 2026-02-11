@@ -1,0 +1,12 @@
+{
+  "sidebar": {
+    "users": "ユーザー",
+    "analytics": "アナリティクス",
+    "settings": "設定",
+    "orders": "注文"
+  },
+  "dashboard": {
+    "title": "管理ダッシュボード",
+    "total_orders": "注文総数"
+  }
+}

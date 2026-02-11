@@ -1,0 +1,14 @@
+{
+  "sidebar": {
+    "users": "Users",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "orders": "Orders"
+  },
+  "dashboard": {
+    "title": "Admin Dashboard",
+    "total_orders": "Total Orders",
+    "revenue": "Revenue",
+    "new_users": "New Users"
+  }
+}

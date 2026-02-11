@@ -2,3 +2,10 @@ node_modules/
 out/
 *.vsix
 .vscode-test/
+screenshots/node_modules/
+screenshots/project/node_modules/
+screenshots/project-namespace/node_modules/
+screenshots/project-monorepo/node_modules/
+screenshots/project-monorepo/apps/*/node_modules/
+screenshots/.tmp-user-data/
+docs/videos/frames/

@@ -1,0 +1,12 @@
+{
+  "nav": {
+    "home": "ホーム",
+    "products": "商品一覧",
+    "cart": "カート"
+  },
+  "actions": {
+    "login": "ログイン",
+    "add_to_cart": "カートに追加",
+    "buy_now": "今すぐ購入"
+  }
+}

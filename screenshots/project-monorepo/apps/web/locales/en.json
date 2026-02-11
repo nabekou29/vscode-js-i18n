@@ -1,0 +1,15 @@
+{
+  "hero": {
+    "title": "Welcome to ShopNow",
+    "subtitle": "Discover amazing deals every day"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "about": "About Us"
+  },
+  "cta": {
+    "shop_now": "Shop Now",
+    "learn_more": "Learn More"
+  }
+}

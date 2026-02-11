@@ -1,0 +1,31 @@
+{
+  "app": {
+    "title": "ProjectHub"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "team": "Team",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "welcome": "Welcome back, Alex!",
+    "overview": "Here's your project overview for today.",
+    "recent_activity": "Recent Activity"
+  },
+  "stats": {
+    "active_projects": "Active Projects",
+    "team_members": "Team Members",
+    "completed_tasks": "Completed Tasks"
+  },
+  "actions": {
+    "create_project": "Create New Project",
+    "invite_member": "Invite Team Member",
+    "view_all": "View All"
+  },
+  "footer": {
+    "copyright": "\u00a9 2026 ProjectHub",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_service": "Terms of Service"
+  }
+}

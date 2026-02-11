@@ -1,0 +1,22 @@
+{
+  "app": {
+    "title": "プロジェクトハブ"
+  },
+  "nav": {
+    "dashboard": "ダッシュボード",
+    "projects": "プロジェクト",
+    "team": "チーム",
+    "settings": "設定"
+  },
+  "dashboard": {
+    "welcome": "おかえりなさい、Alex！"
+  },
+  "stats": {
+    "active_projects": "アクティブなプロジェクト",
+    "team_members": "チームメンバー"
+  },
+  "actions": {
+    "create_project": "新規プロジェクト作成",
+    "invite_member": "メンバーを招待"
+  }
+}

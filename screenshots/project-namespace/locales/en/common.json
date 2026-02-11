@@ -1,0 +1,12 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "cart": "Cart"
+  },
+  "actions": {
+    "login": "Sign In",
+    "add_to_cart": "Add to Cart",
+    "buy_now": "Buy Now"
+  }
+}
