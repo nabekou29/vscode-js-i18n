@@ -12,6 +12,13 @@ interface DecorationInfo {
 
 type GetClientForUri = (uri: vscode.Uri) => LanguageClient | undefined;
 
+function truncateText(text: string, maxLength: number | null): string {
+  if (maxLength && text.length > maxLength) {
+    return text.substring(0, maxLength) + "\u2026";
+  }
+  return text;
+}
+
 let annotationDecorationType: vscode.TextEditorDecorationType | undefined;
 let disappearDecorationType: vscode.TextEditorDecorationType | undefined;
 const debounceTimers = new Map<string, NodeJS.Timeout>();
@@ -108,6 +115,8 @@ function applyDecorations(editor: vscode.TextEditor): void {
   }
 
   const maxLength = config.get<number | null>("decoration.maxLength", 50);
+  const mode = config.get<string>("decoration.mode", "replace");
+  const cursorLineBehavior = config.get<string>("decoration.cursorLine", "inline");
   const selection = editor.selection;
 
   const annotations: vscode.DecorationOptions[] = [];
@@ -127,26 +136,58 @@ function applyDecorations(editor: vscode.TextEditor): void {
       (selection.start.line <= range.end.line &&
         range.end.line <= selection.end.line);
 
-    let text = "";
-    if (!cursorOnLine) {
-      text = deco.value;
-      if (maxLength && text.length > maxLength) {
-        text = text.substring(0, maxLength) + "\u2026";
-      }
-      disappears.push(range);
-    }
+    const truncated = truncateText(deco.value, maxLength);
 
-    annotations.push({
-      range,
-      hoverMessage: deco.key,
-      renderOptions: {
-        after: {
-          contentText: text,
-          color: new vscode.ThemeColor("editorCodeLens.foreground"),
-          fontStyle: "normal",
+    if (mode === "inline") {
+      // Always show to the right (key text stays visible)
+      annotations.push({
+        range,
+        hoverMessage: deco.key,
+        renderOptions: {
+          after: {
+            contentText: ` ${truncated}`,
+            color: new vscode.ThemeColor("editorCodeLens.foreground"),
+            fontStyle: "italic",
+          },
         },
-      },
-    });
+      });
+    } else if (!cursorOnLine) {
+      // Replace mode, not on cursor line: hide key, show translation
+      annotations.push({
+        range,
+        hoverMessage: deco.key,
+        renderOptions: {
+          after: {
+            contentText: truncated,
+            color: new vscode.ThemeColor("editorCodeLens.foreground"),
+            fontStyle: "normal",
+          },
+        },
+      });
+      disappears.push(range);
+    } else if (cursorLineBehavior === "inline") {
+      // Replace mode, cursor line, inline: show to the right
+      annotations.push({
+        range,
+        hoverMessage: deco.key,
+        renderOptions: {
+          after: {
+            contentText: ` ${truncated}`,
+            color: new vscode.ThemeColor("editorCodeLens.foreground"),
+            fontStyle: "italic",
+          },
+        },
+      });
+    } else {
+      // Replace mode, cursor line, hide: show nothing
+      annotations.push({
+        range,
+        hoverMessage: deco.key,
+        renderOptions: {
+          after: { contentText: "" },
+        },
+      });
+    }
   }
 
   editor.setDecorations(annotationDecorationType, annotations);

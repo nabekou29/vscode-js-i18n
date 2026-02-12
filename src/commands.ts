@@ -14,6 +14,10 @@ export function activateCommands(
     vscode.commands.registerCommand("jsI18n.deleteUnusedKeys", () =>
       deleteUnusedKeys(getClientForUri),
     ),
+    vscode.commands.registerCommand(
+      "jsI18n.selectDecorationMode",
+      selectDecorationMode,
+    ),
   );
 }
 
@@ -47,6 +51,70 @@ async function copyKey(getClientForUri: GetClientForUri): Promise<void> {
   } catch (error) {
     vscode.window.showErrorMessage(`Failed to get key: ${error}`);
   }
+}
+
+interface DecorationModeOption {
+  label: string;
+  description: string;
+  mode: string;
+  cursorLine: string;
+}
+
+const DECORATION_MODES: DecorationModeOption[] = [
+  {
+    label: "Replace (inline on cursor line)",
+    description: "Replace key with translation. Show inline on cursor line.",
+    mode: "replace",
+    cursorLine: "inline",
+  },
+  {
+    label: "Replace (hide on cursor line)",
+    description: "Replace key with translation. Hide on cursor line.",
+    mode: "replace",
+    cursorLine: "hide",
+  },
+  {
+    label: "Inline",
+    description: "Always show translation to the right of the key.",
+    mode: "inline",
+    cursorLine: "hide",
+  },
+];
+
+async function selectDecorationMode(): Promise<void> {
+  const config = vscode.workspace.getConfiguration("jsI18n");
+  const currentMode = config.get<string>("decoration.mode", "replace");
+  const currentCursorLine = config.get<string>("decoration.cursorLine", "inline");
+
+  const items = DECORATION_MODES.map((opt) => ({
+    ...opt,
+    picked:
+      opt.mode === currentMode && opt.cursorLine === currentCursorLine,
+  }));
+
+  const selected = await vscode.window.showQuickPick(items, {
+    placeHolder: "Select decoration display mode",
+  });
+
+  if (!selected) return;
+
+  const target = getConfigTargetScope(config, "decoration.mode");
+  await config.update("decoration.mode", selected.mode, target);
+  await config.update("decoration.cursorLine", selected.cursorLine, target);
+}
+
+function getConfigTargetScope(
+  config: vscode.WorkspaceConfiguration,
+  key: string,
+): vscode.ConfigurationTarget {
+  const inspected = config.inspect(key);
+  if (inspected?.workspaceFolderValue !== undefined) {
+    return vscode.ConfigurationTarget.WorkspaceFolder;
+  }
+  if (inspected?.workspaceValue !== undefined) {
+    return vscode.ConfigurationTarget.Workspace;
+  }
+  return vscode.ConfigurationTarget.Global;
 }
 
 async function deleteUnusedKeys(

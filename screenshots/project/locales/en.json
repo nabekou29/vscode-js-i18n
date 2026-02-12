@@ -10,7 +10,7 @@
   },
   "dashboard": {
     "welcome": "Welcome back, Alex!",
-    "overview": "Here's your project overview for today.",
+    "overview": "Here's your <1>project overview</1> for today.",
     "recent_activity": "Recent Activity"
   },
   "stats": {

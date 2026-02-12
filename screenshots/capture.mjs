@@ -7,7 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const extensionRoot = path.resolve(__dirname, "..");
 const imagesDir = path.resolve(extensionRoot, "docs", "images");
 const videosDir = path.resolve(extensionRoot, "docs", "videos");
-const VIDEO_FPS = 5;
+const VIDEO_FPS = 20;
 
 fs.mkdirSync(imagesDir, { recursive: true });
 fs.mkdirSync(videosDir, { recursive: true });
@@ -73,10 +73,13 @@ class FrameRecorder {
     this.recording = false;
     this.capturing = false;
     this.intervalId = null;
+    this.startTime = null;
+    this.stopTime = null;
   }
 
   start(intervalMs) {
     this.recording = true;
+    this.startTime = Date.now();
     this.intervalId = setInterval(async () => {
       if (!this.recording || this.capturing) return;
       this.capturing = true;
@@ -93,7 +96,14 @@ class FrameRecorder {
 
   stop() {
     this.recording = false;
+    this.stopTime = Date.now();
     if (this.intervalId) clearInterval(this.intervalId);
+  }
+
+  /** Actual framerate based on elapsed time */
+  get actualFps() {
+    const elapsed = (this.stopTime - this.startTime) / 1000;
+    return this.frames.length / elapsed;
   }
 
   save(dir) {
@@ -213,6 +223,31 @@ async function runCommand(window, name) {
   await window.waitForTimeout(400);
   await window.keyboard.press("Enter");
   await window.waitForTimeout(500);
+}
+
+async function saveRecorderToMp4(recorder, outputPath) {
+  const framesDir = outputPath + "-frames";
+  if (fs.existsSync(framesDir)) {
+    fs.rmSync(framesDir, { recursive: true });
+  }
+  const count = recorder.save(framesDir);
+  const actualFps = recorder.actualFps.toFixed(2);
+  console.log(`Captured ${count} frames (actual: ${actualFps} fps)`);
+
+  if (count > 0) {
+    const { execSync } = await import("node:child_process");
+    const cmd = `ffmpeg -y -framerate ${actualFps} -i "${framesDir}/frame-%05d.png" -c:v libx264 -pix_fmt yuv420p -crf 23 -an "${outputPath}"`;
+    console.log(`Converting frames to MP4...`);
+    try {
+      execSync(cmd, { stdio: "pipe" });
+      const size = fs.statSync(outputPath).size;
+      console.log(`MP4 saved: ${outputPath} (${(size / 1024).toFixed(0)} KB)`);
+      fs.rmSync(framesDir, { recursive: true });
+    } catch (e) {
+      console.error("ffmpeg conversion failed:", e.message);
+      console.log("Frames kept at:", framesDir);
+    }
+  }
 }
 
 // =====================================================
@@ -344,34 +379,86 @@ console.log("\n=== Main project (Dashboard) ===");
   await window.waitForTimeout(2000);
 
   recorder.stop();
+  await saveRecorderToMp4(recorder, path.join(videosDir, "demo.mp4"));
 
-  // Save frames
-  const framesDir = path.join(videosDir, "frames");
-  if (fs.existsSync(framesDir)) {
-    fs.rmSync(framesDir, { recursive: true });
-  }
-  const count = recorder.save(framesDir);
-  console.log(`Captured ${count} frames`);
+  // --- Decoration mode switching video ---
+  console.log("\nStarting decoration mode switching video...");
+
+  // Switch back to English first
+  await runCommand(window, "JS I18n: Select Language");
+  await window.waitForTimeout(1000);
+  await window.keyboard.type("en", { delay: 100 });
+  await window.waitForTimeout(300);
+  await window.keyboard.press("Enter");
+  await window.waitForTimeout(3000);
+
+  await window.keyboard.press("Meta+Home");
+  await window.waitForTimeout(1000);
+
+  const modeRecorder = new FrameRecorder(window);
+  modeRecorder.start(Math.round(1000 / VIDEO_FPS));
+
+  // Scene 1: Show current mode (Replace + inline on cursor line)
+  await window.waitForTimeout(2000);
+
+  // Move cursor to a translation line to show inline behavior
+  await window.keyboard.press("Control+g");
+  await window.waitForTimeout(300);
+  await window.keyboard.type("9", { delay: 100 });
+  await window.keyboard.press("Enter");
+  await window.waitForTimeout(2500);
+
+  // Scene 2: Switch to "Inline" mode
+  await runCommand(window, "JS I18n: Select Decoration Mode");
+  await window.waitForTimeout(1000);
+  await window.keyboard.type("Inline", { delay: 50 });
+  await window.waitForTimeout(500);
+  await window.keyboard.press("Enter");
+  await window.waitForTimeout(3000);
+
+  // Scene 3: Move cursor around to show inline mode doesn't change
+  await window.keyboard.press("Control+g");
+  await window.waitForTimeout(300);
+  await window.keyboard.type("20", { delay: 100 });
+  await window.keyboard.press("Enter");
+  await window.waitForTimeout(2500);
+
+  // Scene 4: Switch to "Replace (hide on cursor line)"
+  await runCommand(window, "JS I18n: Select Decoration Mode");
+  await window.waitForTimeout(1000);
+  await window.keyboard.type("hide", { delay: 50 });
+  await window.waitForTimeout(500);
+  await window.keyboard.press("Enter");
+  await window.waitForTimeout(3000);
+
+  // Move cursor to show hide behavior
+  await window.keyboard.press("Control+g");
+  await window.waitForTimeout(300);
+  await window.keyboard.type("9", { delay: 100 });
+  await window.keyboard.press("Enter");
+  await window.waitForTimeout(2500);
+
+  // Scene 5: Switch back to default "Replace (inline on cursor line)"
+  await runCommand(window, "JS I18n: Select Decoration Mode");
+  await window.waitForTimeout(1000);
+  await window.keyboard.press("Enter"); // First item is the default
+  await window.waitForTimeout(3000);
+
+  // Move cursor to show inline-on-cursor behavior
+  await window.keyboard.press("Control+g");
+  await window.waitForTimeout(300);
+  await window.keyboard.type("9", { delay: 100 });
+  await window.keyboard.press("Enter");
+  await window.waitForTimeout(2500);
+
+  modeRecorder.stop();
+  await saveRecorderToMp4(
+    modeRecorder,
+    path.join(videosDir, "decoration-modes.mp4"),
+  );
 
   console.log("Closing VS Code...");
   await app.close();
-
-  // Convert frames to WebM
-  if (count > 0) {
-    const { execSync } = await import("node:child_process");
-    const webmPath = path.join(videosDir, "demo.webm");
-    const cmd = `ffmpeg -y -framerate ${VIDEO_FPS} -i "${framesDir}/frame-%05d.png" -c:v libvpx-vp9 -crf 30 -b:v 0 -an "${webmPath}"`;
-    console.log("\nConverting frames to WebM...");
-    try {
-      execSync(cmd, { stdio: "pipe" });
-      const size = fs.statSync(webmPath).size;
-      console.log(`WebM saved: ${webmPath} (${(size / 1024).toFixed(0)} KB)`);
-      fs.rmSync(framesDir, { recursive: true });
-    } catch (e) {
-      console.error("ffmpeg conversion failed:", e.message);
-      console.log("Frames kept at:", framesDir);
-    }
-  }
 }
 
 // =====================================================

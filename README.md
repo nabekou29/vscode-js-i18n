@@ -2,7 +2,7 @@
 
 i18next / next-intl / react-intl support for VS Code, powered by [js-i18n-language-server](https://github.com/user/js-i18n-language-server).
 
-<video src="docs/videos/demo.webm" autoplay loop muted playsinline></video>
+<video src="docs/videos/demo.mp4" autoplay loop muted playsinline></video>
 
 ## Features
 

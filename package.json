@@ -128,6 +128,26 @@
           "type": ["number", "null"],
           "default": 50,
           "description": "Max display length for inline translation. null = unlimited."
+        },
+        "jsI18n.decoration.mode": {
+          "type": "string",
+          "enum": ["replace", "inline"],
+          "default": "replace",
+          "enumDescriptions": [
+            "Replace the key text with the translation value.",
+            "Show the translation value to the right of the key."
+          ],
+          "description": "How to display inline translations."
+        },
+        "jsI18n.decoration.cursorLine": {
+          "type": "string",
+          "enum": ["hide", "inline"],
+          "default": "inline",
+          "enumDescriptions": [
+            "Hide the translation on the cursor line.",
+            "Show the translation to the right on the cursor line."
+          ],
+          "description": "Behavior on the cursor line when mode is 'replace'."
         }
       }
     },
@@ -150,6 +170,11 @@
       {
         "command": "jsI18n.deleteUnusedKeys",
         "title": "Delete Unused Keys",
+        "category": "JS I18n"
+      },
+      {
+        "command": "jsI18n.selectDecorationMode",
+        "title": "Select Decoration Mode",
         "category": "JS I18n"
       }
     ]

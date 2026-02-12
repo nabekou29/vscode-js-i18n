@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans, Translation } from "react-i18next";
 
 export function Dashboard() {
   const { t } = useTranslation();
@@ -18,8 +18,21 @@ export function Dashboard() {
       <main>
         <section className="hero">
           <h2>{t("dashboard.welcome")}</h2>
-          <p>{t("dashboard.overview")}</p>
+          <p>
+            <Trans t={t} i18nKey="dashboard.overview">
+              Here's your <strong>project overview</strong> for today.
+            </Trans>
+          </p>
         </section>
+
+        <Translation>
+          {(t) => (
+            <section className="activity">
+              <h3>{t("dashboard.recent_activity")}</h3>
+              <a href="/activity">{t("actions.view_all")}</a>
+            </section>
+          )}
+        </Translation>
 
         <section className="stats">
           <div className="stat-card">
@@ -39,11 +52,6 @@ export function Dashboard() {
         <section className="actions">
           <button>{t("actions.create_project")}</button>
           <button>{t("actions.invite_member")}</button>
-        </section>
-
-        <section className="activity">
-          <h3>{t("dashboard.recent_activity")}</h3>
-          <a href="/activity">{t("actions.view_all")}</a>
         </section>
       </main>
 
