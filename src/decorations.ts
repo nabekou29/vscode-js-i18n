@@ -39,13 +39,15 @@ export function activateDecorations(
     }),
     vscode.workspace.onDidChangeTextDocument((e) => {
       if (e.document === vscode.window.activeTextEditor?.document) {
-        cachedDecorations.delete(e.document.uri.toString());
         debounceRefresh(getClientForUri);
       }
     }),
     vscode.window.onDidChangeTextEditorSelection((e) => {
       if (e.textEditor === vscode.window.activeTextEditor) {
-        applyDecorations(e.textEditor);
+        const uri = e.textEditor.document.uri.toString();
+        if (!debounceTimers.has(uri)) {
+          applyDecorations(e.textEditor);
+        }
       }
     }),
   );
@@ -59,7 +61,12 @@ function debounceRefresh(getClientForUri: GetClientForUri): void {
 
   const key = editor.document.uri.toString();
   const existing = debounceTimers.get(key);
-  if (existing) clearTimeout(existing);
+
+  if (!existing) {
+    fetchAndApply(getClientForUri);
+  } else {
+    clearTimeout(existing);
+  }
 
   debounceTimers.set(
     key,
