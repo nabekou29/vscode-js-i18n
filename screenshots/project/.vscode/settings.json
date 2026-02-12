@@ -6,8 +6,8 @@
   "editor.lineHeight": 22,
   "errorLens.enabledDiagnosticLevels": ["error", "warning", "info", "hint"],
   "screencastMode.keyboardOptions": {
-    "showKeys": false,
-    "showSingleEditorCursorMoves": false
-  },
-  "screencastMode.fontSize": 20
+    "showSingleEditorCursorMoves": false,
+    "showCommands": false,
+    "showKeys": false
+  }
 }

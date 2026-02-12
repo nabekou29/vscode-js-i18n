@@ -1,11 +1,18 @@
 # JS I18n
 
-i18next / next-intl / react-intl support for VS Code, powered by [js-i18n-language-server](https://github.com/user/js-i18n-language-server).
+i18next / next-intl / react-intl support for VS Code, powered by [js-i18n-language-server](https://github.com/nabekou29/js-i18n-language-server).
+
+> Also available for Neovim: [js-i18n.nvim](https://github.com/nabekou29/js-i18n.nvim)
 
 ## Features
 
 - **Inline translation display** -- See translation values directly in your code
 - **Translation diagnostics** -- Detect missing and unused translation keys
+- **Completion** -- Auto-complete translation keys as you type
+- **Hover** -- View all translation values by hovering over a key
+- **Go to definition** -- Jump to the key definition in JSON translation files
+- **Find references** -- Find all usages of a translation key in source code
+- **Rename** -- Rename a translation key across all source and JSON files
 - **Language switcher** -- Switch display language from status bar or command palette
 - **Edit translations** -- Edit translation values from code actions or command palette
 - **Copy key** -- Copy the translation key at cursor to clipboard
@@ -14,7 +21,9 @@ i18next / next-intl / react-intl support for VS Code, powered by [js-i18n-langua
 
 ## Demo
 
-<video src="docs/videos/demo.mp4" autoplay loop muted playsinline></video>
+<!-- この動画は docs/videos/demo.mp4 をアップロードしたもの -->
+
+https://github.com/user-attachments/assets/a18d5d7a-64a8-444c-94fc-09b3600347c5
 
 ## Inline Translation Display
 
@@ -24,58 +33,58 @@ Translation values are displayed directly in your code, replacing the key text.
 
 ### Decoration Modes
 
-<video src="docs/videos/decoration-modes.mp4" autoplay loop muted playsinline></video>
-
 Choose how translations are displayed via `JS I18n: Select Decoration Mode` command.
 
-| Mode | Behavior | Cursor line |
-|------|----------|-------------|
-| **Replace + Inline** (default) | Key is replaced with translation | Shows translation to the right |
-| **Replace + Hide** | Key is replaced with translation | Hidden |
-| **Inline** | Key stays visible | Translation shown to the right |
+| Mode                           | Behavior                         | Cursor line                    | Screenshot                                                     |
+| ------------------------------ | -------------------------------- | ------------------------------ | -------------------------------------------------------------- |
+| **Replace + Inline** (default) | Key is replaced with translation | Shows translation to the right | ![Replace + Inline](docs/images/decoration-replace-inline.png) |
+| **Replace + Hide**             | Key is replaced with translation | Hidden                         | ![Replace + Hide](docs/images/decoration-replace-hide.png)     |
+| **Inline**                     | Key stays visible                | Translation shown to the right | ![Inline](docs/images/decoration-inline.png)                   |
+
+## Code Intelligence
+
+![Completion](docs/images/completion.png)
+
+![Hover](docs/images/hover.png)
+
+Translation keys are fully integrated with the editor's intelligence features:
+
+- **Completion** -- Start typing inside `t("")` to see matching keys
+- **Hover** -- View translations for all languages at a glance
+- **Go to definition** -- Jump directly to the key in JSON translation files
+- **Find references** -- Locate every usage of a key across your codebase
+- **Rename** -- Rename a key across all source and translation files at once
 
 ## Translation Diagnostics
 
-| Type | Target | Default severity | Description |
-|------|--------|------------------|-------------|
-| **Missing translations** | Source files (`.tsx`, `.ts`, ...) | Warning | Keys used in code but not translated for some languages |
-| **Unused translations** | Translation files (`.json`) | Hint | Keys defined in JSON but not referenced by any source code |
+| Type                     | Target                            | Default severity | Description                                                |
+| ------------------------ | --------------------------------- | ---------------- | ---------------------------------------------------------- |
+| **Missing translations** | Source files (`.tsx`, `.ts`, ...) | Warning          | Keys used in code but not translated for some languages    |
+| **Unused translations**  | Translation files (`.json`)       | Hint             | Keys defined in JSON but not referenced by any source code |
 
 ![Missing translation diagnostics](docs/images/diagnostics.png)
 
 ![Unused translation diagnostics](docs/images/unused-diagnostics.png)
 
-## Language Switcher
+## Project Structure Support
 
-![Language Switcher](docs/images/language-switcher.png)
-
-Switch the display language from the status bar or command palette.
-
-## Key Prefix
-
-![Key prefix](docs/images/key-prefix.png)
-
-`useTranslation({ keyPrefix: "stats" })` automatically prepends the prefix to all `t()` calls, reducing repetition in deeply nested translation structures.
-
-## Namespace Support
+### Namespace
 
 ![Namespace support](docs/images/namespace.png)
 
 Multiple `useTranslation()` calls with different namespaces are fully supported. The same key name resolves to different values depending on the namespace.
 
-## Monorepo Support
+### Key Prefix
+
+![Key prefix](docs/images/key-prefix.png)
+
+`useTranslation("ns", { keyPrefix: "stats" })` automatically prepends the prefix to all `t()` calls, reducing repetition in deeply nested translation structures.
+
+### Monorepo
 
 ![Monorepo support](docs/images/monorepo.png)
 
 Automatic per-package server isolation based on `package.json` boundaries. The same key resolves to different translations in each package.
-
-## Requirements
-
-[js-i18n-language-server](https://github.com/user/js-i18n-language-server) must be installed and available in your PATH, or configured via `jsI18n.serverPath`.
-
-```bash
-cargo install js-i18n-language-server
-```
 
 ## Supported Libraries
 
@@ -83,27 +92,61 @@ cargo install js-i18n-language-server
 - [next-intl](https://next-intl-docs.vercel.app/)
 - [react-intl](https://formatjs.io/docs/react-intl/)
 
+### Supported Syntax
+
+```tsx
+// Function hooks
+const { t } = useTranslation()
+const { t } = useTranslation("namespace")
+const { t } = useTranslation("namespace", { keyPrefix: "section" })
+const t = useTranslations()          // next-intl
+const t = useTranslations("namespace")
+
+// Translation calls
+t("key")
+t("nested.key.path")
+t("key", { count: 1 })
+
+// JSX components
+<Trans i18nKey="key" />
+<Translation>{(t) => <span>{t("key")}</span>}</Translation>
+```
+
+## Requirements
+
+The language server binary is bundled with the extension -- no manual installation needed.
+
+To use a custom build, set `jsI18n.serverPath` or install via:
+
+```bash
+cargo install js-i18n-language-server
+```
+
 ## Configuration
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `jsI18n.serverPath` | `null` | Path to `js-i18n-language-server` binary |
-| `jsI18n.translationFiles.includePatterns` | `["**/{locales,messages}/**/*.json"]` | Glob patterns for translation files |
-| `jsI18n.translationFiles.excludePatterns` | `[]` | Glob patterns to exclude |
-| `jsI18n.includePatterns` | `["**/*.{js,jsx,ts,tsx}"]` | Source file glob patterns |
-| `jsI18n.excludePatterns` | `["node_modules/**"]` | Source file exclusion patterns |
-| `jsI18n.keySeparator` | `"."` | Separator for nested translation keys |
-| `jsI18n.namespaceSeparator` | `null` | Separator between namespace and key |
-| `jsI18n.defaultNamespace` | `null` | Default namespace when none is specified |
-| `jsI18n.primaryLanguages` | `null` | Fallback language priority |
-| `jsI18n.decoration.enabled` | `true` | Enable inline translation display |
-| `jsI18n.decoration.maxLength` | `50` | Max display length for inline translation |
-| `jsI18n.decoration.mode` | `"replace"` | Display mode: `replace` or `inline` |
-| `jsI18n.decoration.cursorLine` | `"inline"` | Cursor line behavior: `hide` or `inline` |
-| `jsI18n.diagnostics.missingTranslation.enabled` | `true` | Enable missing translation diagnostics |
-| `jsI18n.diagnostics.missingTranslation.severity` | `"warning"` | Severity level |
-| `jsI18n.diagnostics.unusedTranslation.enabled` | `true` | Enable unused translation diagnostics |
-| `jsI18n.diagnostics.unusedTranslation.severity` | `"hint"` | Severity level |
+| Setting                                                   | Default                               | Description                                                    |
+| --------------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------- |
+| `jsI18n.serverPath`                                       | `null`                                | Path to `js-i18n-language-server` binary                       |
+| `jsI18n.translationFiles.includePatterns`                 | `["**/{locales,messages}/**/*.json"]` | Glob patterns for translation files                            |
+| `jsI18n.translationFiles.excludePatterns`                 | `[]`                                  | Glob patterns to exclude                                       |
+| `jsI18n.includePatterns`                                  | `["**/*.{js,jsx,ts,tsx}"]`            | Source file glob patterns                                      |
+| `jsI18n.excludePatterns`                                  | `["node_modules/**"]`                 | Source file exclusion patterns                                 |
+| `jsI18n.keySeparator`                                     | `"."`                                 | Separator for nested translation keys                          |
+| `jsI18n.namespaceSeparator`                               | `null`                                | Separator between namespace and key                            |
+| `jsI18n.defaultNamespace`                                 | `null`                                | Default namespace when none is specified                       |
+| `jsI18n.primaryLanguages`                                 | `null`                                | Fallback language priority                                     |
+| `jsI18n.decoration.enabled`                               | `true`                                | Enable inline translation display                              |
+| `jsI18n.decoration.maxLength`                             | `50`                                  | Max display length for inline translation                      |
+| `jsI18n.decoration.mode`                                  | `"replace"`                           | Display mode: `replace` or `inline`                            |
+| `jsI18n.decoration.cursorLine`                            | `"inline"`                            | Cursor line behavior: `hide` or `inline`                       |
+| `jsI18n.diagnostics.missingTranslation.enabled`           | `true`                                | Enable missing translation diagnostics                         |
+| `jsI18n.diagnostics.missingTranslation.severity`          | `"warning"`                           | Severity level                                                 |
+| `jsI18n.diagnostics.missingTranslation.requiredLanguages` | `null`                                | Only check these languages                                     |
+| `jsI18n.diagnostics.missingTranslation.optionalLanguages` | `null`                                | Skip these languages                                           |
+| `jsI18n.diagnostics.unusedTranslation.enabled`            | `true`                                | Enable unused translation diagnostics                          |
+| `jsI18n.diagnostics.unusedTranslation.severity`           | `"hint"`                              | Severity level                                                 |
+| `jsI18n.diagnostics.unusedTranslation.ignorePatterns`     | `[]`                                  | Key patterns to exclude from unused diagnostics                |
+| `jsI18n.indexing.numThreads`                              | `null`                                | Parallel thread count for indexing (default: 40% of CPU cores) |
 
 ## License
 
