@@ -5,12 +5,14 @@
   "nav": {
     "dashboard": "ダッシュボード",
     "projects": "プロジェクト",
-    "team": "チーム"
+    "team": "チーム",
+    "reports": "レポート"
   },
   "dashboard": {
     "welcome": "おかえりなさい、Alex！",
     "overview": "今日の<1>プロジェクト概要</1>はこちらです。",
-    "recent_activity": "最近のアクティビティ"
+    "recent_activity": "最近のアクティビティ",
+    "last_login": "最終ログイン: {{time}}"
   },
   "stats": {
     "active_projects": "アクティブなプロジェクト",
@@ -19,7 +21,8 @@
   "actions": {
     "create_project": "新規プロジェクト作成",
     "invite_member": "メンバーを招待",
-    "view_all": "すべて表示"
+    "view_all": "すべて表示",
+    "export_data": "データをエクスポート"
   },
   "footer": {
     "copyright": "\u00a9 2026 プロジェクトハブ",

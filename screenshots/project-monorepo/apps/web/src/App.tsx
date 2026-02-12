@@ -5,6 +5,11 @@ export function App() {
 
   return (
     <div>
+      <header>
+        <h1>{t("app.title")}</h1>
+        <p>{t("app.description")}</p>
+      </header>
+
       <nav>
         <a href="/">{t("nav.home")}</a>
         <a href="/products">{t("nav.products")}</a>
@@ -12,10 +17,9 @@ export function App() {
       </nav>
 
       <section className="hero">
-        <h1>{t("hero.title")}</h1>
+        <h2>{t("hero.title")}</h2>
         <p>{t("hero.subtitle")}</p>
         <button>{t("cta.shop_now")}</button>
-        <a href="/about">{t("cta.learn_more")}</a>
       </section>
     </div>
   );

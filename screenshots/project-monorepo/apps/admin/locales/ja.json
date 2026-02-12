@@ -1,12 +1,17 @@
 {
-  "sidebar": {
-    "users": "ユーザー",
+  "app": {
+    "title": "管理パネル",
+    "description": "ストア管理コンソール"
+  },
+  "nav": {
+    "home": "ダッシュボード",
+    "orders": "注文",
     "analytics": "アナリティクス",
-    "settings": "設定",
-    "orders": "注文"
+    "settings": "設定"
   },
   "dashboard": {
-    "title": "管理ダッシュボード",
-    "total_orders": "注文総数"
+    "total_orders": "注文総数",
+    "revenue": "売上",
+    "new_users": "新規ユーザー"
   }
 }

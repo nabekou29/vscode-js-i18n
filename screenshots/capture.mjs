@@ -287,7 +287,54 @@ console.log("\n=== Main project (Dashboard) ===");
   await window.keyboard.press("Meta+j");
   await window.waitForTimeout(500);
 
-  // Screenshot 3: Language switcher
+  // Screenshot 3: Unused translation diagnostics (in JSON file)
+  console.log("Capturing unused-diagnostics screenshot...");
+  await openFile(window, "en.json");
+  await window.waitForTimeout(5000);
+  await window.keyboard.press("Meta+Home");
+  await window.waitForTimeout(1000);
+  await window.screenshot({
+    path: path.join(imagesDir, "unused-diagnostics.png"),
+  });
+
+  // Screenshot 4: Key prefix (inline mode + en.json side by side)
+  console.log("Capturing key-prefix screenshot...");
+  // Switch to inline decoration mode
+  await runCommand(window, "JS I18n: Select Decoration Mode");
+  await window.waitForTimeout(1000);
+  await window.keyboard.type("Inline", { delay: 50 });
+  await window.waitForTimeout(500);
+  await window.keyboard.press("Enter");
+  await window.waitForTimeout(2000);
+
+  await openFile(window, "StatsPanel.tsx");
+  await window.waitForTimeout(3000);
+  await window.keyboard.press("Meta+Home");
+  await window.waitForTimeout(1000);
+
+  // Split right → open en.json
+  await window.keyboard.press("Meta+\\");
+  await window.waitForTimeout(500);
+  await openFile(window, "en.json");
+  await window.waitForTimeout(2000);
+
+  await window.screenshot({
+    path: path.join(imagesDir, "key-prefix.png"),
+  });
+
+  // Close split and switch back to replace mode
+  await window.keyboard.press("Meta+w");
+  await window.waitForTimeout(500);
+  await runCommand(window, "JS I18n: Select Decoration Mode");
+  await window.waitForTimeout(1000);
+  await window.keyboard.press("Enter"); // First item = Replace (inline on cursor line)
+  await window.waitForTimeout(1000);
+
+  // Go back to Dashboard.tsx for remaining screenshots
+  await openFile(window, "Dashboard.tsx");
+  await window.waitForTimeout(2000);
+
+  // Screenshot 5: Language switcher
   console.log("Capturing language-switcher screenshot...");
   await window.keyboard.press("Meta+Shift+p");
   await window.waitForTimeout(500);
@@ -462,13 +509,14 @@ console.log("\n=== Main project (Dashboard) ===");
 }
 
 // =====================================================
-// 2. Namespace project: screenshot
+// 2. Namespace project: screenshot (TSX left, JSONs right top/bottom)
 // =====================================================
 console.log("\n=== Namespace project ===");
 {
   const projectDir = path.resolve(__dirname, "project-namespace");
   const { app, window } = await launchVSCode(projectDir);
 
+  // Left pane: ProductPage.tsx
   console.log("Opening ProductPage.tsx...");
   await openFile(window, "ProductPage.tsx");
 
@@ -477,6 +525,18 @@ console.log("\n=== Namespace project ===");
 
   await window.keyboard.press("Meta+Home");
   await window.waitForTimeout(1000);
+
+  // Split right → open common.json in right pane
+  await window.keyboard.press("Meta+\\");
+  await window.waitForTimeout(500);
+  await openFile(window, "common.json");
+  await window.waitForTimeout(2000);
+
+  // Split down in right group → open product.json in bottom-right
+  await runCommand(window, "View: Split Editor Down");
+  await window.waitForTimeout(500);
+  await openFile(window, "product.json");
+  await window.waitForTimeout(2000);
 
   console.log("Capturing namespace screenshot...");
   await window.screenshot({ path: path.join(imagesDir, "namespace.png") });

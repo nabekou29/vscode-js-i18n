@@ -1,12 +1,15 @@
 {
-  "sidebar": {
-    "users": "Users",
+  "app": {
+    "title": "Admin Panel",
+    "description": "Store management console"
+  },
+  "nav": {
+    "home": "Dashboard",
+    "orders": "Orders",
     "analytics": "Analytics",
-    "settings": "Settings",
-    "orders": "Orders"
+    "settings": "Settings"
   },
   "dashboard": {
-    "title": "Admin Dashboard",
     "total_orders": "Total Orders",
     "revenue": "Revenue",
     "new_users": "New Users"

@@ -5,31 +5,27 @@ export function Dashboard() {
 
   return (
     <div>
+      <header>
+        <h1>{t("app.title")}</h1>
+        <p>{t("app.description")}</p>
+      </header>
+
       <aside>
         <nav>
-          <a href="/users">{t("sidebar.users")}</a>
-          <a href="/orders">{t("sidebar.orders")}</a>
-          <a href="/analytics">{t("sidebar.analytics")}</a>
-          <a href="/settings">{t("sidebar.settings")}</a>
+          <a href="/">{t("nav.home")}</a>
+          <a href="/orders">{t("nav.orders")}</a>
+          <a href="/analytics">{t("nav.analytics")}</a>
+          <a href="/settings">{t("nav.settings")}</a>
         </nav>
       </aside>
 
       <main>
-        <h1>{t("dashboard.title")}</h1>
-        <div className="stats">
-          <div>
-            <h3>{t("dashboard.total_orders")}</h3>
-            <span>1,234</span>
-          </div>
-          <div>
-            <h3>{t("dashboard.revenue")}</h3>
-            <span>$45,678</span>
-          </div>
-          <div>
-            <h3>{t("dashboard.new_users")}</h3>
-            <span>89</span>
-          </div>
-        </div>
+        <h2>{t("dashboard.total_orders")}</h2>
+        <span>1,234</span>
+        <h2>{t("dashboard.revenue")}</h2>
+        <span>$45,678</span>
+        <h2>{t("dashboard.new_users")}</h2>
+        <span>89</span>
       </main>
     </div>
   );

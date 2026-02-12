@@ -1,11 +1,18 @@
 {
-  "hero": {
-    "title": "ShopNow へようこそ",
-    "subtitle": "毎日お得なセールを発見"
+  "app": {
+    "title": "ショップナウ",
+    "description": "お気に入りのオンラインストア"
   },
   "nav": {
     "home": "ホーム",
     "products": "商品",
     "about": "会社概要"
+  },
+  "hero": {
+    "title": "ShopNow へようこそ",
+    "subtitle": "毎日お得なセールを発見"
+  },
+  "cta": {
+    "shop_now": "今すぐ購入"
   }
 }

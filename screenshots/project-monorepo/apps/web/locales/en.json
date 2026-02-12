@@ -1,15 +1,18 @@
 {
-  "hero": {
-    "title": "Welcome to ShopNow",
-    "subtitle": "Discover amazing deals every day"
+  "app": {
+    "title": "ShopNow",
+    "description": "Your favorite online store"
   },
   "nav": {
     "home": "Home",
     "products": "Products",
     "about": "About Us"
   },
+  "hero": {
+    "title": "Welcome to ShopNow",
+    "subtitle": "Discover amazing deals every day"
+  },
   "cta": {
-    "shop_now": "Shop Now",
-    "learn_more": "Learn More"
+    "shop_now": "Shop Now"
   }
 }

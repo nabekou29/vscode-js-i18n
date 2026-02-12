@@ -6,12 +6,14 @@
     "dashboard": "Dashboard",
     "projects": "Projects",
     "team": "Team",
-    "settings": "Settings"
+    "settings": "Settings",
+    "reports": "Reports"
   },
   "dashboard": {
     "welcome": "Welcome back, Alex!",
     "overview": "Here's your <1>project overview</1> for today.",
-    "recent_activity": "Recent Activity"
+    "recent_activity": "Recent Activity",
+    "last_login": "Last login: {{time}}"
   },
   "stats": {
     "active_projects": "Active Projects",
@@ -21,7 +23,8 @@
   "actions": {
     "create_project": "Create New Project",
     "invite_member": "Invite Team Member",
-    "view_all": "View All"
+    "view_all": "View All",
+    "export_data": "Export Data"
   },
   "footer": {
     "copyright": "\u00a9 2026 ProjectHub",
