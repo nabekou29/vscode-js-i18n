@@ -3,9 +3,14 @@ node = "24"
 pnpm = "10"
 
 [tasks.screenshots]
-description = "Capture screenshots and demo video for README"
+description = "Capture screenshots for README"
 depends = ["screenshots:setup"]
-run = "cd screenshots && node capture.mjs"
+run = "cd screenshots && node capture-screenshots.mjs"
+
+[tasks.video]
+description = "Capture demo video for README"
+depends = ["screenshots:setup"]
+run = "cd screenshots && node capture-video.mjs"
 
 [tasks."screenshots:setup"]
 description = "Install dependencies and build extension for screenshots"
