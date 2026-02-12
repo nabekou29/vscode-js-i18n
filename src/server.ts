@@ -38,5 +38,15 @@ export function resolveServerPath(): string {
     return binWrapper;
   }
 
+  const bundledBin = path.join(
+    __dirname,
+    "..",
+    "server",
+    process.platform === "win32" ? `${SERVER_NAME}.exe` : SERVER_NAME,
+  );
+  if (fs.existsSync(bundledBin)) {
+    return bundledBin;
+  }
+
   return SERVER_NAME;
 }
