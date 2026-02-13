@@ -38,7 +38,7 @@ jobs:
         run: bash scripts/download-server.sh "$SERVER_VERSION" "${{ matrix.target }}"
 
       - name: Package VSIX
-        run: pnpm exec vsce package --target ${{ matrix.target }}
+        run: pnpm exec vsce package --no-dependencies --target ${{ matrix.target }}
 
       - uses: actions/upload-artifact@v4
         with:
