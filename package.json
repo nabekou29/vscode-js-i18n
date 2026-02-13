@@ -253,12 +253,13 @@
     "vscode-languageclient": "^9.0.1"
   },
   "devDependencies": {
-    "@typescript/native-preview": "^7.0.0-dev",
     "@types/mocha": "^10.0.0",
     "@types/node": "^20.0.0",
     "@types/vscode": "^1.75.0",
+    "@typescript/native-preview": "^7.0.0-dev",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.7.1",
     "esbuild": "^0.24.0",
     "mocha": "^11.7.5",
     "vscode-languageserver-protocol": "^3.17.5"
