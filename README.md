@@ -1,8 +1,12 @@
-# JS I18n
+<div align="center">
+    <img src="docs/images/icon.png" width="128" height="128" alt="js-i18n">
+    <h1>js-i18n</h1>
+</div>
 
-i18next / next-intl / react-intl support for VS Code, powered by [js-i18n-language-server](https://github.com/nabekou29/js-i18n-language-server).
+**JavaScript/TypeScript i18n library support for VS Code**.
+powered by [nabekou29/js-i18n-language-server](https://github.com/nabekou29/js-i18n-language-server).
 
-> Also available for Neovim: [js-i18n.nvim](https://github.com/nabekou29/js-i18n.nvim)
+[![Visual Studio Marketplace](https://img.shields.io/visual-studio-marketplace/v/nabekou29.js-i18n?label=VS%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=nabekou29.js-i18n) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## Features
 
@@ -23,7 +27,7 @@ i18next / next-intl / react-intl support for VS Code, powered by [js-i18n-langua
 
 <!-- この動画は docs/videos/demo.mp4 をアップロードしたもの -->
 
-https://github.com/user-attachments/assets/a18d5d7a-64a8-444c-94fc-09b3600347c5
+https://github.com/user-attachments/assets/d87cbc1c-60e3-438c-b204-d78a3624b1f1
 
 ## Inline Translation Display
 
@@ -116,7 +120,7 @@ t("key", { count: 1 })
 
 The language server binary is bundled with the extension -- no manual installation needed.
 
-To use a custom build, set `jsI18n.serverPath` or install via:
+To use a custom build, set `js-i18n.serverPath` or install via:
 
 ```bash
 cargo install js-i18n-language-server
@@ -124,29 +128,29 @@ cargo install js-i18n-language-server
 
 ## Configuration
 
-| Setting                                                   | Default                               | Description                                                    |
-| --------------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------- |
-| `jsI18n.serverPath`                                       | `null`                                | Path to `js-i18n-language-server` binary                       |
-| `jsI18n.translationFiles.includePatterns`                 | `["**/{locales,messages}/**/*.json"]` | Glob patterns for translation files                            |
-| `jsI18n.translationFiles.excludePatterns`                 | `[]`                                  | Glob patterns to exclude                                       |
-| `jsI18n.includePatterns`                                  | `["**/*.{js,jsx,ts,tsx}"]`            | Source file glob patterns                                      |
-| `jsI18n.excludePatterns`                                  | `["node_modules/**"]`                 | Source file exclusion patterns                                 |
-| `jsI18n.keySeparator`                                     | `"."`                                 | Separator for nested translation keys                          |
-| `jsI18n.namespaceSeparator`                               | `null`                                | Separator between namespace and key                            |
-| `jsI18n.defaultNamespace`                                 | `null`                                | Default namespace when none is specified                       |
-| `jsI18n.primaryLanguages`                                 | `null`                                | Fallback language priority                                     |
-| `jsI18n.decoration.enabled`                               | `true`                                | Enable inline translation display                              |
-| `jsI18n.decoration.maxLength`                             | `50`                                  | Max display length for inline translation                      |
-| `jsI18n.decoration.mode`                                  | `"replace"`                           | Display mode: `replace` or `inline`                            |
-| `jsI18n.decoration.cursorLine`                            | `"inline"`                            | Cursor line behavior: `hide` or `inline`                       |
-| `jsI18n.diagnostics.missingTranslation.enabled`           | `true`                                | Enable missing translation diagnostics                         |
-| `jsI18n.diagnostics.missingTranslation.severity`          | `"warning"`                           | Severity level                                                 |
-| `jsI18n.diagnostics.missingTranslation.requiredLanguages` | `null`                                | Only check these languages                                     |
-| `jsI18n.diagnostics.missingTranslation.optionalLanguages` | `null`                                | Skip these languages                                           |
-| `jsI18n.diagnostics.unusedTranslation.enabled`            | `true`                                | Enable unused translation diagnostics                          |
-| `jsI18n.diagnostics.unusedTranslation.severity`           | `"hint"`                              | Severity level                                                 |
-| `jsI18n.diagnostics.unusedTranslation.ignorePatterns`     | `[]`                                  | Key patterns to exclude from unused diagnostics                |
-| `jsI18n.indexing.numThreads`                              | `null`                                | Parallel thread count for indexing (default: 40% of CPU cores) |
+| Setting                                                    | Default                               | Description                                                    |
+| ---------------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------- |
+| `js-i18n.serverPath`                                       | `null`                                | Path to `js-i18n-language-server` binary                       |
+| `js-i18n.translationFiles.includePatterns`                 | `["**/{locales,messages}/**/*.json"]` | Glob patterns for translation files                            |
+| `js-i18n.translationFiles.excludePatterns`                 | `[]`                                  | Glob patterns to exclude                                       |
+| `js-i18n.includePatterns`                                  | `["**/*.{js,jsx,ts,tsx}"]`            | Source file glob patterns                                      |
+| `js-i18n.excludePatterns`                                  | `["node_modules/**"]`                 | Source file exclusion patterns                                 |
+| `js-i18n.keySeparator`                                     | `"."`                                 | Separator for nested translation keys                          |
+| `js-i18n.namespaceSeparator`                               | `null`                                | Separator between namespace and key                            |
+| `js-i18n.defaultNamespace`                                 | `null`                                | Default namespace when none is specified                       |
+| `js-i18n.primaryLanguages`                                 | `null`                                | Fallback language priority                                     |
+| `js-i18n.decoration.enabled`                               | `true`                                | Enable inline translation display                              |
+| `js-i18n.decoration.maxLength`                             | `50`                                  | Max display length for inline translation                      |
+| `js-i18n.decoration.mode`                                  | `"replace"`                           | Display mode: `replace` or `inline`                            |
+| `js-i18n.decoration.cursorLine`                            | `"inline"`                            | Cursor line behavior: `hide` or `inline`                       |
+| `js-i18n.diagnostics.missingTranslation.enabled`           | `true`                                | Enable missing translation diagnostics                         |
+| `js-i18n.diagnostics.missingTranslation.severity`          | `"warning"`                           | Severity level                                                 |
+| `js-i18n.diagnostics.missingTranslation.requiredLanguages` | `null`                                | Only check these languages                                     |
+| `js-i18n.diagnostics.missingTranslation.optionalLanguages` | `null`                                | Skip these languages                                           |
+| `js-i18n.diagnostics.unusedTranslation.enabled`            | `true`                                | Enable unused translation diagnostics                          |
+| `js-i18n.diagnostics.unusedTranslation.severity`           | `"hint"`                              | Severity level                                                 |
+| `js-i18n.diagnostics.unusedTranslation.ignorePatterns`     | `[]`                                  | Key patterns to exclude from unused diagnostics                |
+| `js-i18n.indexing.numThreads`                              | `null`                                | Parallel thread count for indexing (default: 40% of CPU cores) |
 
 ## License
 
