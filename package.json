@@ -7,6 +7,10 @@
   "publisher": "nabekou29",
   "license": "MIT",
   "icon": "docs/images/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nabekou29/vscode-js-i18n"
+  },
   "engines": {
     "vscode": "^1.75.0"
   },
