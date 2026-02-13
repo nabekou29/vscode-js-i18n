@@ -112,7 +112,7 @@ await window.waitForTimeout(1000);
 // Scene 1: Switch to Japanese
 await window.keyboard.press("Meta+Shift+p");
 await window.waitForTimeout(500);
-await window.keyboard.type("JS I18n: Select Language", { delay: 15 });
+await window.keyboard.type("js-i18n: Select Language", { delay: 15 });
 await window.waitForTimeout(500);
 await window.keyboard.press("Enter");
 await window.waitForTimeout(1000);
@@ -147,7 +147,7 @@ await window.waitForTimeout(1000);
 
 await window.keyboard.press("Meta+Shift+p");
 await window.waitForTimeout(500);
-await window.keyboard.type("JS I18n: Edit Translation", { delay: 15 });
+await window.keyboard.type("js-i18n: Edit Translation", { delay: 15 });
 await window.waitForTimeout(500);
 await window.keyboard.press("Enter");
 await window.waitForTimeout(1500);

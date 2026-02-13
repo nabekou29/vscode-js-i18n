@@ -193,7 +193,7 @@ export async function goTo(window, position) {
 }
 
 export async function selectDecorationMode(window, filterText) {
-  await runCommand(window, "JS I18n: Select Decoration Mode");
+  await runCommand(window, "js-i18n: Select Decoration Mode");
   await window.waitForTimeout(500);
   if (filterText) {
     await typeText(window, filterText);

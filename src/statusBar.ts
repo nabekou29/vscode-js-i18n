@@ -65,7 +65,7 @@ async function selectLanguage(
 ): Promise<void> {
   const client = getActiveClient(getClientForUri);
   if (!client) {
-    vscode.window.showWarningMessage("JS I18n server is not running");
+    vscode.window.showWarningMessage("js-i18n server is not running");
     return;
   }
 

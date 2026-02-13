@@ -123,7 +123,7 @@ function createClientForProjectRoot(
   const projectUri = Uri.file(projectRoot);
 
   if (!outputChannel) {
-    outputChannel = window.createOutputChannel("JS I18n Language Server");
+    outputChannel = window.createOutputChannel("js-i18n-language-server");
   }
 
   const serverPath = resolveServerPath();
@@ -148,7 +148,7 @@ function createClientForProjectRoot(
 
   return new I18nLanguageClient(
     "js-i18n",
-    "JS I18n Language Server",
+    "js-i18n-language-server",
     { command: serverPath, transport: TransportKind.stdio },
     clientOptions,
     projectUri,
@@ -166,7 +166,7 @@ function didOpenTextDocument(document: TextDocument): void {
   if (!workspace.workspaceFolders) {
     if (!defaultClient) {
       if (!outputChannel) {
-        outputChannel = window.createOutputChannel("JS I18n Language Server");
+        outputChannel = window.createOutputChannel("js-i18n-language-server");
       }
       const serverPath = resolveServerPath();
       const clientOptions: LanguageClientOptions = {
@@ -181,7 +181,7 @@ function didOpenTextDocument(document: TextDocument): void {
       };
       defaultClient = new I18nLanguageClient(
         "js-i18n",
-        "JS I18n Language Server",
+        "js-i18n-language-server",
         { command: serverPath, transport: TransportKind.stdio },
         clientOptions,
       );

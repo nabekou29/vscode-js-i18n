@@ -27,7 +27,7 @@ powered by [nabekou29/js-i18n-language-server](https://github.com/nabekou29/js-i
 
 <!-- この動画は docs/videos/demo.mp4 をアップロードしたもの -->
 
-https://github.com/user-attachments/assets/d87cbc1c-60e3-438c-b204-d78a3624b1f1
+https://github.com/user-attachments/assets/2495b3dd-830c-4af8-9688-2365c5c2a0f1
 
 ## Inline Translation Display
 
@@ -37,7 +37,7 @@ Translation values are displayed directly in your code, replacing the key text.
 
 ### Decoration Modes
 
-Choose how translations are displayed via `JS I18n: Select Decoration Mode` command.
+Choose how translations are displayed via `js-i18n: Select Decoration Mode` command.
 
 | Mode                           | Behavior                         | Cursor line                    | Screenshot                                                     |
 | ------------------------------ | -------------------------------- | ------------------------------ | -------------------------------------------------------------- |
