@@ -9,7 +9,7 @@ export function activateTranslationEditor(
 ): void {
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      "jsI18n.editTranslation",
+      "js-i18n.editTranslation",
       async (args?: { lang: string; key: string }) => {
         if (args) {
           await promptEditTranslation(getClientForUri, args.lang, args.key);

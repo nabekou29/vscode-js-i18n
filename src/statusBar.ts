@@ -13,11 +13,11 @@ export function activateStatusBar(
     vscode.StatusBarAlignment.Right,
     100,
   );
-  statusBarItem.command = "jsI18n.selectLanguage";
+  statusBarItem.command = "js-i18n.selectLanguage";
   context.subscriptions.push(statusBarItem);
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("jsI18n.selectLanguage", () =>
+    vscode.commands.registerCommand("js-i18n.selectLanguage", () =>
       selectLanguage(getClientForUri),
     ),
   );

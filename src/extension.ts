@@ -147,7 +147,7 @@ function createClientForProjectRoot(
   };
 
   return new I18nLanguageClient(
-    "jsI18n",
+    "js-i18n",
     "JS I18n Language Server",
     { command: serverPath, transport: TransportKind.stdio },
     clientOptions,
@@ -180,7 +180,7 @@ function didOpenTextDocument(document: TextDocument): void {
         outputChannel,
       };
       defaultClient = new I18nLanguageClient(
-        "jsI18n",
+        "js-i18n",
         "JS I18n Language Server",
         { command: serverPath, transport: TransportKind.stdio },
         clientOptions,
@@ -237,7 +237,7 @@ export function activate(context: ExtensionContext): void {
 
   context.subscriptions.push(
     workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration("jsI18n")) {
+      if (e.affectsConfiguration("js-i18n")) {
         for (const client of getAllClients()) {
           sendConfiguration(client);
         }

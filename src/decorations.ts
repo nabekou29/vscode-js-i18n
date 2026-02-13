@@ -81,7 +81,7 @@ async function fetchAndApply(getClientForUri: GetClientForUri): Promise<void> {
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
 
-  const config = vscode.workspace.getConfiguration("jsI18n");
+  const config = vscode.workspace.getConfiguration("js-i18n");
   if (!config.get<boolean>("decoration.enabled", true)) {
     clearDecorations(editor);
     return;
@@ -115,7 +115,7 @@ function applyDecorations(editor: vscode.TextEditor): void {
     return;
   }
 
-  const config = vscode.workspace.getConfiguration("jsI18n");
+  const config = vscode.workspace.getConfiguration("js-i18n");
   if (!config.get<boolean>("decoration.enabled", true)) {
     clearDecorations(editor);
     return;

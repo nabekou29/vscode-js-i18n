@@ -6,7 +6,7 @@ const SERVER_NAME = "js-i18n-language-server";
 
 export function resolveServerPath(): string {
   const configPath = workspace
-    .getConfiguration("jsI18n")
+    .getConfiguration("js-i18n")
     .get<string>("serverPath");
   if (configPath && fs.existsSync(configPath)) {
     return configPath;

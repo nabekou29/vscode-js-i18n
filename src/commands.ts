@@ -8,14 +8,14 @@ export function activateCommands(
   context: vscode.ExtensionContext,
 ): void {
   context.subscriptions.push(
-    vscode.commands.registerCommand("jsI18n.copyKey", () =>
+    vscode.commands.registerCommand("js-i18n.copyKey", () =>
       copyKey(getClientForUri),
     ),
-    vscode.commands.registerCommand("jsI18n.deleteUnusedKeys", () =>
+    vscode.commands.registerCommand("js-i18n.deleteUnusedKeys", () =>
       deleteUnusedKeys(getClientForUri),
     ),
     vscode.commands.registerCommand(
-      "jsI18n.selectDecorationMode",
+      "js-i18n.selectDecorationMode",
       selectDecorationMode,
     ),
   );
@@ -82,7 +82,7 @@ const DECORATION_MODES: DecorationModeOption[] = [
 ];
 
 async function selectDecorationMode(): Promise<void> {
-  const config = vscode.workspace.getConfiguration("jsI18n");
+  const config = vscode.workspace.getConfiguration("js-i18n");
   const currentMode = config.get<string>("decoration.mode", "replace");
   const currentCursorLine = config.get<string>("decoration.cursorLine", "inline");
 

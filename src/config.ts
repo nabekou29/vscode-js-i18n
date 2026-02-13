@@ -2,7 +2,7 @@ import { workspace } from "vscode";
 import { LanguageClient } from "vscode-languageclient/node";
 
 export function getFlatSettings(): Record<string, unknown> {
-  const config = workspace.getConfiguration("jsI18n");
+  const config = workspace.getConfiguration("js-i18n");
 
   return {
     translationFiles: {

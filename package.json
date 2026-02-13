@@ -1,10 +1,11 @@
 {
   "name": "js-i18n",
-  "displayName": "JS I18n",
-  "description": "i18next / next-intl / react-intl support via LSP",
+  "displayName": "js-i18n",
+  "description": "JavaScript/TypeScript i18n library support via LSP",
   "version": "0.1.0",
   "publisher": "nabekou29",
   "license": "MIT",
+  "icon": "docs/images/icon.png",
   "engines": {
     "vscode": "^1.75.0"
   },
@@ -22,116 +23,172 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "JS I18n",
+      "title": "js-i18n",
       "properties": {
-        "jsI18n.serverPath": {
+        "js-i18n.serverPath": {
           "type": "string",
           "default": null,
           "markdownDescription": "Path to `js-i18n-language-server` binary. If not set, resolves from `node_modules` or `PATH`."
         },
-        "jsI18n.translationFiles.includePatterns": {
+        "js-i18n.translationFiles.includePatterns": {
           "type": "array",
-          "items": { "type": "string" },
-          "default": ["**/{locales,messages}/**/*.json"],
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/{locales,messages}/**/*.json"
+          ],
           "description": "Glob patterns for translation files."
         },
-        "jsI18n.translationFiles.excludePatterns": {
+        "js-i18n.translationFiles.excludePatterns": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "default": [],
           "description": "Glob patterns to exclude from translation files."
         },
-        "jsI18n.includePatterns": {
+        "js-i18n.includePatterns": {
           "type": "array",
-          "items": { "type": "string" },
-          "default": ["**/*.{js,jsx,ts,tsx}"],
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/*.{js,jsx,ts,tsx}"
+          ],
           "description": "Source file glob patterns."
         },
-        "jsI18n.excludePatterns": {
+        "js-i18n.excludePatterns": {
           "type": "array",
-          "items": { "type": "string" },
-          "default": ["node_modules/**"],
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "node_modules/**"
+          ],
           "description": "Source file exclusion patterns."
         },
-        "jsI18n.keySeparator": {
+        "js-i18n.keySeparator": {
           "type": "string",
           "default": ".",
           "description": "Separator for nested translation keys."
         },
-        "jsI18n.namespaceSeparator": {
-          "type": ["string", "null"],
+        "js-i18n.namespaceSeparator": {
+          "type": [
+            "string",
+            "null"
+          ],
           "default": null,
           "description": "Separator between namespace and key."
         },
-        "jsI18n.defaultNamespace": {
-          "type": ["string", "null"],
+        "js-i18n.defaultNamespace": {
+          "type": [
+            "string",
+            "null"
+          ],
           "default": null,
           "description": "Default namespace when none is specified in code."
         },
-        "jsI18n.primaryLanguages": {
-          "type": ["array", "null"],
-          "items": { "type": "string" },
+        "js-i18n.primaryLanguages": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
           "default": null,
           "description": "Fallback language priority when current language is unset."
         },
-        "jsI18n.diagnostics.missingTranslation.enabled": {
+        "js-i18n.diagnostics.missingTranslation.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Enable missing translation diagnostics."
         },
-        "jsI18n.diagnostics.missingTranslation.severity": {
+        "js-i18n.diagnostics.missingTranslation.severity": {
           "type": "string",
-          "enum": ["error", "warning", "information", "hint"],
+          "enum": [
+            "error",
+            "warning",
+            "information",
+            "hint"
+          ],
           "default": "warning",
           "description": "Severity for missing translation diagnostics."
         },
-        "jsI18n.diagnostics.missingTranslation.requiredLanguages": {
-          "type": ["array", "null"],
-          "items": { "type": "string" },
+        "js-i18n.diagnostics.missingTranslation.requiredLanguages": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
           "default": null,
           "markdownDescription": "Only check these languages. Mutually exclusive with `optionalLanguages`."
         },
-        "jsI18n.diagnostics.missingTranslation.optionalLanguages": {
-          "type": ["array", "null"],
-          "items": { "type": "string" },
+        "js-i18n.diagnostics.missingTranslation.optionalLanguages": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
           "default": null,
           "markdownDescription": "Skip these languages. Mutually exclusive with `requiredLanguages`."
         },
-        "jsI18n.diagnostics.unusedTranslation.enabled": {
+        "js-i18n.diagnostics.unusedTranslation.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Enable unused translation diagnostics."
         },
-        "jsI18n.diagnostics.unusedTranslation.severity": {
+        "js-i18n.diagnostics.unusedTranslation.severity": {
           "type": "string",
-          "enum": ["error", "warning", "information", "hint"],
+          "enum": [
+            "error",
+            "warning",
+            "information",
+            "hint"
+          ],
           "default": "hint",
           "description": "Severity for unused translation diagnostics."
         },
-        "jsI18n.diagnostics.unusedTranslation.ignorePatterns": {
+        "js-i18n.diagnostics.unusedTranslation.ignorePatterns": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "default": [],
           "description": "Glob patterns for keys to exclude from unused diagnostics."
         },
-        "jsI18n.indexing.numThreads": {
-          "type": ["number", "null"],
+        "js-i18n.indexing.numThreads": {
+          "type": [
+            "number",
+            "null"
+          ],
           "default": null,
           "description": "Parallel thread count for indexing. Default: 40% of CPU cores."
         },
-        "jsI18n.decoration.enabled": {
+        "js-i18n.decoration.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Enable inline translation display."
         },
-        "jsI18n.decoration.maxLength": {
-          "type": ["number", "null"],
+        "js-i18n.decoration.maxLength": {
+          "type": [
+            "number",
+            "null"
+          ],
           "default": 50,
           "description": "Max display length for inline translation. null = unlimited."
         },
-        "jsI18n.decoration.mode": {
+        "js-i18n.decoration.mode": {
           "type": "string",
-          "enum": ["replace", "inline"],
+          "enum": [
+            "replace",
+            "inline"
+          ],
           "default": "replace",
           "enumDescriptions": [
             "Replace the key text with the translation value.",
@@ -139,9 +196,12 @@
           ],
           "description": "How to display inline translations."
         },
-        "jsI18n.decoration.cursorLine": {
+        "js-i18n.decoration.cursorLine": {
           "type": "string",
-          "enum": ["hide", "inline"],
+          "enum": [
+            "hide",
+            "inline"
+          ],
           "default": "inline",
           "enumDescriptions": [
             "Hide the translation on the cursor line.",
@@ -153,29 +213,29 @@
     },
     "commands": [
       {
-        "command": "jsI18n.selectLanguage",
+        "command": "js-i18n.selectLanguage",
         "title": "Select Language",
-        "category": "JS I18n"
+        "category": "js-i18n"
       },
       {
-        "command": "jsI18n.editTranslation",
+        "command": "js-i18n.editTranslation",
         "title": "Edit Translation",
-        "category": "JS I18n"
+        "category": "js-i18n"
       },
       {
-        "command": "jsI18n.copyKey",
+        "command": "js-i18n.copyKey",
         "title": "Copy Translation Key",
-        "category": "JS I18n"
+        "category": "js-i18n"
       },
       {
-        "command": "jsI18n.deleteUnusedKeys",
+        "command": "js-i18n.deleteUnusedKeys",
         "title": "Delete Unused Keys",
-        "category": "JS I18n"
+        "category": "js-i18n"
       },
       {
-        "command": "jsI18n.selectDecorationMode",
+        "command": "js-i18n.selectDecorationMode",
         "title": "Select Decoration Mode",
-        "category": "JS I18n"
+        "category": "js-i18n"
       }
     ]
   },
@@ -203,6 +263,8 @@
     "vscode-languageserver-protocol": "^3.17.5"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
