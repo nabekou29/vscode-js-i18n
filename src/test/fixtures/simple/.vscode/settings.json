@@ -1,6 +1,5 @@
 {
-  "jsI18n.serverPath": "/Users/kohei_watanabe/.cargo/bin/js-i18n-language-server",
-  "jsI18n.translationFiles.includePatterns": [
+  "js-i18n.translationFiles.includePatterns": [
     "**/locales/**/*.json"
   ],
   "i18n-ally.localesPaths": [
