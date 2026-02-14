@@ -27,7 +27,7 @@ powered by [nabekou29/js-i18n-language-server](https://github.com/nabekou29/js-i
 
 <!-- この動画は docs/videos/demo.mp4 をアップロードしたもの -->
 
-https://github.com/user-attachments/assets/2495b3dd-830c-4af8-9688-2365c5c2a0f1
+<video src="https://github.com/user-attachments/assets/2495b3dd-830c-4af8-9688-2365c5c2a0f1"></video>
 
 ## Inline Translation Display
 
