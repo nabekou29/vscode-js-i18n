@@ -2,7 +2,7 @@
   "name": "js-i18n",
   "displayName": "js-i18n",
   "description": "JavaScript/TypeScript i18n library support via LSP",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "packageManager": "pnpm@10.28.0",
   "publisher": "nabekou29",
   "license": "MIT",
