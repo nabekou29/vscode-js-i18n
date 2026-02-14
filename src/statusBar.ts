@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
-import { LanguageClient } from "vscode-languageclient/node";
-
-type GetClientForUri = (uri: vscode.Uri) => LanguageClient | undefined;
+import { executeServerCommand } from "./client";
+import { GetClientForUri } from "./types";
 
 let statusBarItem: vscode.StatusBarItem | undefined;
 
@@ -28,7 +27,7 @@ export function activateStatusBar(
 
 function getActiveClient(
   getClientForUri: GetClientForUri,
-): LanguageClient | undefined {
+): ReturnType<GetClientForUri> {
   const editor = vscode.window.activeTextEditor;
   if (!editor) return undefined;
   return getClientForUri(editor.document.uri);
@@ -46,10 +45,10 @@ async function updateStatusBar(
   }
 
   try {
-    const result = (await client.sendRequest("workspace/executeCommand", {
-      command: "i18n.getCurrentLanguage",
-      arguments: [],
-    })) as { language: string } | null;
+    const result = await executeServerCommand<{ language: string }>(
+      client,
+      "i18n.getCurrentLanguage",
+    );
 
     statusBarItem.text = `$(globe) ${result?.language ?? "\u2014"}`;
     statusBarItem.tooltip = result?.language
@@ -70,10 +69,10 @@ async function selectLanguage(
   }
 
   try {
-    const result = (await client.sendRequest("workspace/executeCommand", {
-      command: "i18n.getAvailableLanguages",
-      arguments: [],
-    })) as { languages: string[] } | null;
+    const result = await executeServerCommand<{ languages: string[] }>(
+      client,
+      "i18n.getAvailableLanguages",
+    );
 
     if (!result?.languages?.length) {
       vscode.window.showInformationMessage("No languages available");
@@ -85,10 +84,9 @@ async function selectLanguage(
     });
 
     if (selected) {
-      await client.sendRequest("workspace/executeCommand", {
-        command: "i18n.setCurrentLanguage",
-        arguments: [{ language: selected }],
-      });
+      await executeServerCommand(client, "i18n.setCurrentLanguage", [
+        { language: selected },
+      ]);
       await updateStatusBar(getClientForUri);
     }
   } catch (error) {

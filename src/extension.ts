@@ -35,13 +35,15 @@ let defaultClient: LanguageClient | undefined;
 let sortedFoldersCache: string[] | undefined;
 let outputChannel: OutputChannel | undefined;
 
-const SUPPORTED_LANGUAGES = new Set([
+const SUPPORTED_LANGUAGES = [
   "javascript",
   "javascriptreact",
   "typescript",
   "typescriptreact",
   "json",
-]);
+] as const;
+
+const SUPPORTED_LANGUAGES_SET = new Set<string>(SUPPORTED_LANGUAGES);
 
 function getAllClients(): LanguageClient[] {
   const all = [...clients.values()];
@@ -110,11 +112,28 @@ function findProjectRoot(
   return workspaceRoot;
 }
 
-function setupClient(client: LanguageClient): void {
-  client.onNotification("i18n/decorationsChanged", () => {
-    onDecorationsChanged(getClientForUri);
-    onStatusBarChanged(getClientForUri);
-  });
+function ensureOutputChannel(): OutputChannel {
+  if (!outputChannel) {
+    outputChannel = window.createOutputChannel("js-i18n-language-server");
+  }
+  return outputChannel;
+}
+
+function startClient(client: LanguageClient): void {
+  client
+    .start()
+    .then(async () => {
+      client.onNotification("i18n/decorationsChanged", () => {
+        onDecorationsChanged(getClientForUri);
+        onStatusBarChanged(getClientForUri);
+      });
+      await sendConfiguration(client);
+      onDecorationsChanged(getClientForUri);
+      onStatusBarChanged(getClientForUri);
+    })
+    .catch((error) => {
+      ensureOutputChannel().appendLine(`Failed to start client: ${error}`);
+    });
 }
 
 function createClientForProjectRoot(
@@ -122,29 +141,16 @@ function createClientForProjectRoot(
   workspaceFolder: WorkspaceFolder,
 ): LanguageClient {
   const projectUri = Uri.file(projectRoot);
-
-  if (!outputChannel) {
-    outputChannel = window.createOutputChannel("js-i18n-language-server");
-  }
-
   const serverPath = resolveServerPath();
 
   const clientOptions: LanguageClientOptions = {
-    documentSelector: [
-      ...[
-        "javascript",
-        "javascriptreact",
-        "typescript",
-        "typescriptreact",
-        "json",
-      ].map((language) => ({
-        scheme: "file" as const,
-        language,
-        pattern: `${projectRoot}/**/*`,
-      })),
-    ],
-    workspaceFolder: workspaceFolder,
-    outputChannel,
+    documentSelector: SUPPORTED_LANGUAGES.map((language) => ({
+      scheme: "file" as const,
+      language,
+      pattern: `${projectRoot}/**/*`,
+    })),
+    workspaceFolder,
+    outputChannel: ensureOutputChannel(),
   };
 
   return new I18nLanguageClient(
@@ -158,7 +164,7 @@ function createClientForProjectRoot(
 
 function didOpenTextDocument(document: TextDocument): void {
   if (
-    !SUPPORTED_LANGUAGES.has(document.languageId) ||
+    !SUPPORTED_LANGUAGES_SET.has(document.languageId) ||
     (document.uri.scheme !== "file" && document.uri.scheme !== "untitled")
   ) {
     return;
@@ -166,19 +172,13 @@ function didOpenTextDocument(document: TextDocument): void {
 
   if (!workspace.workspaceFolders) {
     if (!defaultClient) {
-      if (!outputChannel) {
-        outputChannel = window.createOutputChannel("js-i18n-language-server");
-      }
       const serverPath = resolveServerPath();
       const clientOptions: LanguageClientOptions = {
-        documentSelector: [
-          { scheme: "file", language: "javascript" },
-          { scheme: "file", language: "javascriptreact" },
-          { scheme: "file", language: "typescript" },
-          { scheme: "file", language: "typescriptreact" },
-          { scheme: "file", language: "json" },
-        ],
-        outputChannel,
+        documentSelector: SUPPORTED_LANGUAGES.map((language) => ({
+          scheme: "file" as const,
+          language,
+        })),
+        outputChannel: ensureOutputChannel(),
       };
       defaultClient = new I18nLanguageClient(
         "js-i18n",
@@ -186,12 +186,7 @@ function didOpenTextDocument(document: TextDocument): void {
         { command: serverPath, transport: TransportKind.stdio },
         clientOptions,
       );
-      defaultClient.start().then(async () => {
-        setupClient(defaultClient!);
-        await sendConfiguration(defaultClient!);
-        onDecorationsChanged(getClientForUri);
-        onStatusBarChanged(getClientForUri);
-      });
+      startClient(defaultClient);
     }
     return;
   }
@@ -206,12 +201,7 @@ function didOpenTextDocument(document: TextDocument): void {
 
   const client = createClientForProjectRoot(projectRoot, folder);
   clients.set(key, client);
-  client.start().then(async () => {
-    setupClient(client);
-    await sendConfiguration(client);
-    onDecorationsChanged(getClientForUri);
-    onStatusBarChanged(getClientForUri);
-  });
+  startClient(client);
 }
 
 export function activate(context: ExtensionContext): void {
@@ -255,13 +245,5 @@ export function activate(context: ExtensionContext): void {
 export async function deactivate(): Promise<void> {
   deactivateDecorations();
   deactivateStatusBar();
-
-  const promises: Promise<void>[] = [];
-  if (defaultClient) {
-    promises.push(defaultClient.stop());
-  }
-  for (const client of clients.values()) {
-    promises.push(client.stop());
-  }
-  await Promise.all(promises);
+  await Promise.all(getAllClients().map((client) => client.stop()));
 }

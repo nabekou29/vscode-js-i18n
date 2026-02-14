@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
-import { LanguageClient } from "vscode-languageclient/node";
+import { executeServerCommand } from "./client";
+import { GetClientForUri } from "./types";
 
 interface DecorationInfo {
   range: {
@@ -10,10 +11,8 @@ interface DecorationInfo {
   key: string;
 }
 
-type GetClientForUri = (uri: vscode.Uri) => LanguageClient | undefined;
-
 function truncateText(text: string, maxLength: number | null): string {
-  if (maxLength && text.length > maxLength) {
+  if (maxLength != null && text.length > maxLength) {
     return text.substring(0, maxLength) + "\u2026";
   }
   return text;
@@ -92,17 +91,36 @@ async function fetchAndApply(getClientForUri: GetClientForUri): Promise<void> {
   if (!client) return;
 
   try {
-    const result = await client.sendRequest("workspace/executeCommand", {
-      command: "i18n.getDecorations",
-      arguments: [{ uri }],
-    });
-
-    const decorations = (result as DecorationInfo[] | null) ?? [];
+    const decorations =
+      (await executeServerCommand<DecorationInfo[]>(
+        client,
+        "i18n.getDecorations",
+        [{ uri }],
+      )) ?? [];
     cachedDecorations.set(uri, decorations);
     applyDecorations(editor);
   } catch {
     // Server may not support decorations yet
   }
+}
+
+function makeAnnotation(
+  range: vscode.Range,
+  key: string,
+  contentText: string,
+  fontStyle: string,
+): vscode.DecorationOptions {
+  const color = contentText
+    ? new vscode.ThemeColor("editorCodeLens.foreground")
+    : undefined;
+
+  return {
+    range,
+    hoverMessage: key,
+    renderOptions: {
+      after: { contentText, color, fontStyle },
+    },
+  };
 }
 
 function applyDecorations(editor: vscode.TextEditor): void {
@@ -145,55 +163,23 @@ function applyDecorations(editor: vscode.TextEditor): void {
 
     const truncated = truncateText(deco.value, maxLength);
 
-    if (mode === "inline") {
-      // Always show to the right (key text stays visible)
-      annotations.push({
-        range,
-        hoverMessage: deco.key,
-        renderOptions: {
-          after: {
-            contentText: ` ${truncated}`,
-            color: new vscode.ThemeColor("editorCodeLens.foreground"),
-            fontStyle: "italic",
-          },
-        },
-      });
+    // Show inline (to the right) when: inline mode, or replace mode on cursor line with inline behavior
+    const showInline =
+      mode === "inline" || (cursorOnLine && cursorLineBehavior === "inline");
+
+    if (showInline) {
+      annotations.push(
+        makeAnnotation(range, deco.key, ` ${truncated}`, "italic"),
+      );
     } else if (!cursorOnLine) {
-      // Replace mode, not on cursor line: hide key, show translation
-      annotations.push({
-        range,
-        hoverMessage: deco.key,
-        renderOptions: {
-          after: {
-            contentText: truncated,
-            color: new vscode.ThemeColor("editorCodeLens.foreground"),
-            fontStyle: "normal",
-          },
-        },
-      });
+      // Replace mode, not on cursor line: hide key text, show translation
+      annotations.push(
+        makeAnnotation(range, deco.key, truncated, "normal"),
+      );
       disappears.push(range);
-    } else if (cursorLineBehavior === "inline") {
-      // Replace mode, cursor line, inline: show to the right
-      annotations.push({
-        range,
-        hoverMessage: deco.key,
-        renderOptions: {
-          after: {
-            contentText: ` ${truncated}`,
-            color: new vscode.ThemeColor("editorCodeLens.foreground"),
-            fontStyle: "italic",
-          },
-        },
-      });
     } else {
-      // Replace mode, cursor line, hide: show nothing
-      annotations.push({
-        range,
-        hoverMessage: deco.key,
-        renderOptions: {
-          after: { contentText: "" },
-        },
-      });
+      // Replace mode, cursor line, hide behavior: show nothing
+      annotations.push(makeAnnotation(range, deco.key, "", ""));
     }
   }
 

@@ -9,6 +9,20 @@ import {
 } from "vscode-languageclient/node";
 import { InitializeParams } from "vscode-languageserver-protocol";
 
+/**
+ * Send a typed workspace/executeCommand request to the language server.
+ */
+export async function executeServerCommand<T>(
+  client: LanguageClient,
+  command: string,
+  args: unknown[] = [],
+): Promise<T | null> {
+  return (await client.sendRequest("workspace/executeCommand", {
+    command,
+    arguments: args,
+  })) as T | null;
+}
+
 export class I18nLanguageClient extends LanguageClient {
   constructor(
     id: string,

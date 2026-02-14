@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
-import { LanguageClient } from "vscode-languageclient/node";
-
-type GetClientForUri = (uri: vscode.Uri) => LanguageClient | undefined;
+import { executeServerCommand } from "./client";
+import { GetClientForUri } from "./types";
 
 export function activateTranslationEditor(
   getClientForUri: GetClientForUri,
@@ -47,12 +46,11 @@ async function editTranslationAtCursor(
 
   let key: string | undefined;
   try {
-    const result = (await client.sendRequest("workspace/executeCommand", {
-      command: "i18n.getKeyAtPosition",
-      arguments: [
-        { uri, position: { line: position.line, character: position.character } },
-      ],
-    })) as { key: string } | null;
+    const result = await executeServerCommand<{ key: string }>(
+      client,
+      "i18n.getKeyAtPosition",
+      [{ uri, position: { line: position.line, character: position.character } }],
+    );
     key = result?.key;
   } catch {
     // No key at cursor
@@ -65,10 +63,10 @@ async function editTranslationAtCursor(
 
   let languages: string[] = [];
   try {
-    const result = (await client.sendRequest("workspace/executeCommand", {
-      command: "i18n.getAvailableLanguages",
-      arguments: [],
-    })) as { languages: string[] } | null;
+    const result = await executeServerCommand<{ languages: string[] }>(
+      client,
+      "i18n.getAvailableLanguages",
+    );
     languages = result?.languages ?? [];
   } catch {
     // Fallback
@@ -99,10 +97,11 @@ async function promptEditTranslation(
 
   let currentValue: string | undefined;
   try {
-    const result = (await client.sendRequest("workspace/executeCommand", {
-      command: "i18n.getTranslationValue",
-      arguments: [{ lang, key }],
-    })) as { value: string } | null;
+    const result = await executeServerCommand<{ value: string }>(
+      client,
+      "i18n.getTranslationValue",
+      [{ lang, key }],
+    );
     currentValue = result?.value;
   } catch {
     // Key doesn't exist yet
@@ -116,10 +115,9 @@ async function promptEditTranslation(
 
   if (newValue !== undefined) {
     try {
-      await client.sendRequest("workspace/executeCommand", {
-        command: "i18n.editTranslation",
-        arguments: [{ lang, key, value: newValue }],
-      });
+      await executeServerCommand(client, "i18n.editTranslation", [
+        { lang, key, value: newValue },
+      ]);
     } catch (error) {
       vscode.window.showErrorMessage(`Failed to update translation: ${error}`);
     }

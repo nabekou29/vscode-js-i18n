@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
-import { LanguageClient } from "vscode-languageclient/node";
-
-type GetClientForUri = (uri: vscode.Uri) => LanguageClient | undefined;
+import { executeServerCommand } from "./client";
+import { GetClientForUri } from "./types";
 
 export function activateCommands(
   getClientForUri: GetClientForUri,
@@ -28,10 +27,7 @@ export function activateCommands(
         const client = getClientForUri(uri);
         if (!client) return;
         try {
-          await client.sendRequest("workspace/executeCommand", {
-            command: "i18n.deleteUnusedKeys",
-            arguments: [args],
-          });
+          await executeServerCommand(client, "i18n.deleteUnusedKeys", [args]);
         } catch (error) {
           vscode.window.showErrorMessage(
             `Failed to delete unused keys: ${error}`,
@@ -53,15 +49,11 @@ async function copyKey(getClientForUri: GetClientForUri): Promise<void> {
   const position = editor.selection.active;
 
   try {
-    const result = (await client.sendRequest("workspace/executeCommand", {
-      command: "i18n.getKeyAtPosition",
-      arguments: [
-        {
-          uri,
-          position: { line: position.line, character: position.character },
-        },
-      ],
-    })) as { key: string } | null;
+    const result = await executeServerCommand<{ key: string }>(
+      client,
+      "i18n.getKeyAtPosition",
+      [{ uri, position: { line: position.line, character: position.character } }],
+    );
 
     if (result?.key) {
       await vscode.env.clipboard.writeText(result.key);
@@ -156,10 +148,12 @@ async function deleteUnusedKeys(
   if (confirm !== "Delete") return;
 
   try {
-    const result = (await client.sendRequest("workspace/executeCommand", {
-      command: "i18n.deleteUnusedKeys",
-      arguments: [{ uri: editor.document.uri.toString() }],
-    })) as { deletedCount: number; deletedKeys: string[] } | null;
+    const result = await executeServerCommand<{
+      deletedCount: number;
+      deletedKeys: string[];
+    }>(client, "i18n.deleteUnusedKeys", [
+      { uri: editor.document.uri.toString() },
+    ]);
 
     if (result) {
       vscode.window.showInformationMessage(
