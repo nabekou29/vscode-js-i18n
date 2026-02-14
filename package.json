@@ -12,7 +12,8 @@
     "url": "https://github.com/nabekou29/vscode-js-i18n"
   },
   "engines": {
-    "vscode": "^1.75.0"
+    "vscode": "^1.75.0",
+    "node": ">=24"
   },
   "categories": [
     "Programming Languages"
