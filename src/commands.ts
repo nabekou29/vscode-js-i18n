@@ -18,6 +18,27 @@ export function activateCommands(
       "js-i18n.selectDecorationMode",
       selectDecorationMode,
     ),
+    // Client-side command invoked by server code actions.
+    // Routes to the server via workspace/executeCommand.
+    vscode.commands.registerCommand(
+      "i18n.deleteUnusedKeys",
+      async (args?: { uri: string }) => {
+        if (!args?.uri) return;
+        const uri = vscode.Uri.parse(args.uri);
+        const client = getClientForUri(uri);
+        if (!client) return;
+        try {
+          await client.sendRequest("workspace/executeCommand", {
+            command: "i18n.deleteUnusedKeys",
+            arguments: [args],
+          });
+        } catch (error) {
+          vscode.window.showErrorMessage(
+            `Failed to delete unused keys: ${error}`,
+          );
+        }
+      },
+    ),
   );
 }
 
