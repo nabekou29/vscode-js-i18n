@@ -40,6 +40,7 @@ const SUPPORTED_LANGUAGES = new Set([
   "javascriptreact",
   "typescript",
   "typescriptreact",
+  "json",
 ]);
 
 function getAllClients(): LanguageClient[] {
