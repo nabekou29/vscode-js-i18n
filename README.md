@@ -8,6 +8,11 @@ powered by [nabekou29/js-i18n-language-server](https://github.com/nabekou29/js-i
 
 [![Visual Studio Marketplace](https://img.shields.io/visual-studio-marketplace/v/nabekou29.js-i18n?label=VS%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=nabekou29.js-i18n) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+## Supported Libraries
+
+- [i18next](https://www.i18next.com/) / [react-i18next](https://react.i18next.com/)
+- [next-intl](https://next-intl-docs.vercel.app/)
+
 ## Features
 
 - **Inline translation display** -- See translation values directly in your code
@@ -89,12 +94,6 @@ Multiple `useTranslation()` calls with different namespaces are fully supported.
 ![Monorepo support](docs/images/monorepo.png)
 
 Automatic per-package server isolation based on `package.json` boundaries. The same key resolves to different translations in each package.
-
-## Supported Libraries
-
-- [i18next](https://www.i18next.com/) / [react-i18next](https://react.i18next.com/)
-- [next-intl](https://next-intl-docs.vercel.app/)
-- [react-intl](https://formatjs.io/docs/react-intl/)
 
 ### Supported Syntax
 
